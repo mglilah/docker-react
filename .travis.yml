@@ -3,6 +3,7 @@ services:
   - docker 
   
 before_install:
+  # Initila image 
   - docker build -t mhd/docker-react -f Dockerfile.dev .
 
 # travis CI will be watching the output of this commands 
@@ -10,3 +11,19 @@ before_install:
 # our code is broken 
 script:
   - docker run mhd/docker-react npm run test -- --coverage
+
+# Deploy the application in aws 
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "docker-react"
+  env: "DockerReact-env"
+  # ( bucket where to pu the zip file to deploy the application )
+  # hard drive running on aws  ( Data Lake ) 
+  bucket_name: "elasticbeanstalk-us-east-2-862306857326"  
+  bucket_path: "docker-react"
+  on:
+    branch: master 
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
