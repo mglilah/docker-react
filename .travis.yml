@@ -1,0 +1,12 @@
+sudo: required
+services:
+  - docker 
+  
+before_install:
+  - docker build -t mhd/docker-react -f Dockerfile.dev .
+
+# travis CI will be watching the output of this commands 
+# if it returns  an output =! 0,  travis CI will assume that 
+# our code is broken 
+script:
+  - docker run mhd/docker-react npm run test -- --coverage
